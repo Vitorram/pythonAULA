@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de CPF</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #007BFF, #00D4FF);
+            color: white;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            width: 350px;
+            text-align: center;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+            
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #0056b3, #003d80);
+        }
+
+        #cpf-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        #cpf {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007BFF;
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 6px;
+            display: inline-block;
+            width: auto;
+            min-width: 150px;
+        }
+
+        #copy-btn {
+            background: #28a745;
+        }
+
+        #copy-btn:hover {
+            background: #1e7e34;
+        }
+
+        #copied-msg {
+            font-size: 14px;
+            color: #28a745;
+            font-weight: bold;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Gerador de CPF</h2>
+        <button onclick="gerarCPF()">Gerar CPF</button>
+        <div id="cpf-container">
+            <p id="cpf">---</p>
+            <button id="copy-btn" onclick="copiarCPF()">Copiar</button>
+        </div>
+        <p id="copied-msg">Copiado!</p>
+    </div>
+
+    <script>
+        function gerarCPF() {
+            function calcularDigito(cpfBase) {
+                let soma = 0;
+                let multiplicador = cpfBase.length + 1;
+                for (let i = 0; i < cpfBase.length; i++) {
+                    soma += parseInt(cpfBase[i]) * multiplicador--;
+                }
+                let resto = soma % 11;
+                return resto < 2 ? 0 : 11 - resto;
+            }
+
+            let cpfBase = "";
+            for (let i = 0; i < 9; i++) {
+                cpfBase += Math.floor(Math.random() * 10);
+            }
+
+            let primeiroDigito = calcularDigito(cpfBase);
+            let segundoDigito = calcularDigito(cpfBase + primeiroDigito);
+
+            let cpfCompleto = `${cpfBase}${primeiroDigito}${segundoDigito}`;
+            let cpfFormatado = cpfCompleto.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+
+            document.getElementById("cpf").textContent = cpfFormatado;
+            document.getElementById("copied-msg").style.display = "none"; // Esconde a mensagem de "Copiado!"
+        }
+
+        function copiarCPF() {
+            let cpfTexto = document.getElementById("cpf").textContent;
+            if (cpfTexto !== "---") {
+                navigator.clipboard.writeText(cpfTexto).then(() => {
+                    let msg = document.getElementById("copied-msg");
+                    msg.style.display = "block"; 
+                    setTimeout(() => { msg.style.display = "none"; }, 2000);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
